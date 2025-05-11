@@ -26,7 +26,7 @@ export default function MovieCard({movie, isFavorite, onFavoriteToggle}) {
     }, [movie.title]);
 
     return (
-        <div className="w-[240px] bg-gray-800 rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
+        <div className="w-full bg-gray-800 rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
             <Link to={ `/movies/${ movie._id }` }>
                 <img
                     src={ `https://image.tmdb.org/t/p/w500/${ movie.posterUrl }` || '/placeholder-poster.jpg' }

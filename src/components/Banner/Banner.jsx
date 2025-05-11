@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const getInitial = (name) => {
     if (!name) return "?";
@@ -11,19 +12,18 @@ export default function Banner() {
     const {user, handleLogin, handleLogout} = useAuth();
 
     const [imgError, setImgError] = useState(false);
+    const navigate = useNavigate();
 
     return (
-        <header className="w-screen bg-gray-900 text-white border-b border-gray-800">
+        <header className="bg-gray-900 text-white border-b border-gray-800">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
-                    <div className="text-2xl font-bold text-blue-400">Moodie</div>
-
-                    {/* Main navigation */ }
-                    <nav className="hidden md:flex items-center space-x-8">
-                        <a href="movies" className="hover:text-blue-400 font-medium">Movies</a>
-                        <a href="#" className="hover:text-blue-400 font-medium">About</a>
-                        <a href="#" className="hover:text-blue-400 font-medium">Features</a>
-                    </nav>
+                    <div
+                        onClick={() => navigate('/')}
+                        className="text-2xl font-bold text-blue-400 cursor-pointer"
+                    >
+                        Moodie
+                    </div>
 
                     {/* Right side menu */ }
                     <div className="flex items-center space-x-4">
