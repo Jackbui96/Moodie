@@ -1,5 +1,5 @@
 import React from 'react';
-import PageContainer from './PageContainer';
+import PageContainer from '../components/PageContainer.jsx';
 import { Outlet } from 'react-router-dom';
 
 /**
