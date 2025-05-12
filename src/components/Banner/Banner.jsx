@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import PageContainer from "../../components/PageContainer.jsx";
 
 const getInitial = (name) => {
     if (!name) return "?";
@@ -9,15 +10,14 @@ const getInitial = (name) => {
 }
 
 export default function Banner() {
-    const {user, handleLogin, handleLogout} = useAuth();
-
+    const { user, handleLogin, handleLogout } = useAuth();
     const [imgError, setImgError] = useState(false);
     const navigate = useNavigate();
 
     return (
-        <header className="bg-gray-900 text-white border-b border-gray-800">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
+        <header className="bg-[#111827] text-white border-b border-gray-800">
+            <PageContainer>
+                <div className="flex items-center justify-between h-20">
                     <div
                         onClick={() => navigate('/')}
                         className="text-2xl font-bold text-blue-400 cursor-pointer"
@@ -25,19 +25,19 @@ export default function Banner() {
                         Moodie
                     </div>
 
-                    {/* Right side menu */ }
+                    {/* Right side menu */}
                     <div className="flex items-center space-x-4">
                         <button
-                            onClick={ user ? handleLogout : handleLogin }
-                            className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition"
+                            onClick={user ? handleLogout : handleLogin}
+                            className="px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition"
                         >
-                            { !user ?
+                            {!user ?
                                 "Sign In With Google" :
                                 (<span className="flex items-center gap-2">
-                                    { user.displayName }
-                                    { !imgError && user.photoURL ?
+                                    {user.displayName}
+                                    {!imgError && user.photoURL ?
                                         (<img
-                                            src={ user.photoURL }
+                                            src={user.photoURL}
                                             alt="Profile"
                                             onError={() => { setImgError(true) }}
                                             className="w-8 h-8 rounded-full"/>) :
@@ -49,7 +49,7 @@ export default function Banner() {
                         </button>
                     </div>
                 </div>
-            </div>
+            </PageContainer>
         </header>
     )
 }

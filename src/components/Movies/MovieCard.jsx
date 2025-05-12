@@ -26,43 +26,51 @@ export default function MovieCard({movie, isFavorite, onFavoriteToggle}) {
     }, [movie.title]);
 
     return (
-        <div className="w-full bg-gray-800 rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
-            <Link to={ `/movies/${ movie._id }` }>
-                <img
-                    src={ `https://image.tmdb.org/t/p/w500/${ movie.posterUrl }` || '/placeholder-poster.jpg' }
-                    alt={ movie.title }
-                    className="h-48 w-full object-cover rounded-t-lg"
-                />
-            </Link>
+        <div className="
+            w-full aspect-2/3 flex flex-col
+            bg-gray-800 rounded-lg shadow-md
+            hover:scale-105 transition-transform duration-300
+        ">
+            <div className="relative">
+                <Link to={ `/movies/${ movie._id }` } className="block w-full">
+                    <img
+                        src={ `https://image.tmdb.org/t/p/w500/${ movie.posterUrl }` || '/placeholder-poster.jpg' }
+                        alt={ movie.title }
+                        className="w-full object-cover rounded-t-lg"
+                    />
+                </Link>
 
-            <div className="p-3">
-                <div className="flex items-center gap-2">
-                    <Link to={ `/movies/${ movie._id }` } className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-white truncate flex-1 mr-2 overflow-hidden relative group">
-                            <span
-                                ref={titleRef}
-                                className={`block whitespace-nowrap ${isTruncated ? 'group-hover:animate-scroll-text' : ''}`}
-                            >
-                                { movie.title }
-                            </span>
-                        </h3>
-                    </Link>
+                { user && (
+                    <button
+                        onClick={ () => onFavoriteToggle(movie._id) }
+                        className="absolute top-2 right-2 bg-black bg-opacity-50 p-2 rounded-full text-red-500 hover:bg-opacity-70 transition-colors"
+                        aria-label={ isFavorite ? "Remove from favorites" : "Add to favorites" }
+                    >
+                        { isFavorite ? <FaHeart/> : <FaRegHeart/> }
+                    </button>
+                ) }
 
-                    { user && (
-                        <button
-                            onClick={ () => onFavoriteToggle(movie._id) }
-                            className="text-red-500 text-lg flex-shrink-0 hover:cursor-pointer"
-                        >
-                            { isFavorite ? <FaHeart/> : <FaRegHeart/> }
-                        </button>
-                    ) }
-                </div>
-
-                <div className="flex justify-between text-sm text-gray-400 mt-1">
-                    <span>{ movie.releaseYear }</span>
-                    <span className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs">
+                <div className="absolute bottom-0 right-0 m-2">
+                    <span className="bg-blue-600 text-white px-2 py-1 rounded font-medium">
                         { movie.rating.toFixed(1) }
                     </span>
+                </div>
+            </div>
+
+            <div className="p-3 flex-grow flex flex-col">
+                <Link to={ `/movies/${ movie._id }` } className="block">
+                    <h3 className="text-base font-semibold text-white overflow-hidden relative group">
+                        <span
+                            ref={ titleRef }
+                            className={ `block ${ isTruncated ? 'truncate group-hover:animate-scroll-text' : '' }` }
+                        >
+                            { movie.title }
+                        </span>
+                    </h3>
+                </Link>
+
+                <div className="flex justify-between items-center mt-1 text-sm text-gray-400">
+                    <span>{ movie.releaseYear }</span>
                 </div>
 
                 <div className="mt-2 flex gap-1 flex-wrap">

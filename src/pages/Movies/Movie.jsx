@@ -1,76 +1,47 @@
 import Banner from "../../components/Banner/Banner.jsx";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import MovieCard from "../../components/Movies/MovieCard.jsx";
+import { useMovies } from "../../contexts/MoviesContext";
 
 export default function Movie() {
-    const [movies, setMovies] = useState([]);
-
-    useEffect(() => {
-        const fetchMovies = async () => {
-            try {
-                const response = await axios.post("https://api.a-pani.com/v1/movies/graphql", {
-                    query: `
-                        query RandomMovies {
-                            randomMovies {
-                                id
-                                title
-                                overview
-                                releaseDate
-                                voteAverage
-                                voteCount
-                                popularity
-                                genreIds
-                                posterPath
-                            }
-                        }
-                    `
-                })
-
-                console.log(`test for response: ${ response }`)
-
-                // Transform the data to match MovieCard expected format
-                const transformedMovies = response.data.data.randomMovies.map(movie => ({
-                    _id: movie.id,
-                    title: movie.title,
-                    posterUrl: movie.posterPath?.replace(/^\//, ''), // Remove leading slash if present
-                    releaseYear: new Date(movie.releaseDate).getFullYear(),
-                    rating: movie.voteAverage,
-                    genre: []
-                }));
-
-                setMovies(transformedMovies)
-            } catch (err) {
-                console.error("Error fetching movies:", err)
-            }
-        }
-        fetchMovies();
-    }, [])
+    const { movies, loading, error, loadMoreMovies, toggleFavorite } = useMovies();
 
     return (
         <div className="w-full min-h-screen flex flex-col">
             <Banner/>
             <div className="flex-1 w-full max-w-full px-1 sm:px-4 py-6">
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4 sm:mb-6">Browse All Movies</h2>
-                <div className="
-                    grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6
-                    xl:grid-cols-8 2xl:grid-cols-10 px-4 gap-2 justify-items-center
-                ">
-                    { movies.map((movie) => (
-                        <MovieCard
-                            key={ movie._id }
-                            movie={ movie }
-                            isFavorite={ true }
-                        />
-                    )) }
-                </div>
+
+                {loading && movies.length === 0 ? (
+                    <div className="text-center py-8">Loading movies...</div>
+                ) : error ? (
+                    <div className="text-center text-red-500 py-8">{error}</div>
+                ) : (
+                    <div className="
+                        grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6
+                        xl:grid-cols-8 px-4 gap-2 justify-items-center
+                    ">
+                        {movies.map((movie) => (
+                            <MovieCard
+                                key={movie._id}
+                                movie={movie}
+                                isFavorite={movie.isFavorite || false}
+                                onToggleFavorite={() => toggleFavorite(movie._id)}
+                            />
+                        ))}
+                    </div>
+                )}
+
                 <div className="text-center mt-4 sm:mt-6">
                     <button
-                        className="px-4 sm:px-6 py-2 bg-blue-600 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-700 transition">
-                        Load More Movies
+                        className="px-4 sm:px-6 py-2 bg-blue-600 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-700 transition"
+                        onClick={loadMoreMovies}
+                        disabled={loading}
+                    >
+                        {loading ? "Loading..." : "Load More Movies"}
                     </button>
                 </div>
             </div>
         </div>
-    )
+    );
 }
